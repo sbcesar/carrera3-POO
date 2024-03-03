@@ -4,18 +4,22 @@
  * @property cilindrada La cilindrada de la motocicleta.
  * @constructor Crea una motocicleta con los parámetros especificados, heredando propiedades y funcionalidades de [Vehiculo].
  */
-class Motocicleta(
+open class Motocicleta(
     nombre: String,
     marca: String,
     modelo: String,
     capacidadCombustible: Float,
     combustibleActual: Float,
     kilometrosActuales: Float,
-    private val cilindrada: Int
+    open val cilindrada: Int
 ) : Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
 
     init {
-        require(cilindrada in 125..1000) { "Una motocicleta debe tener entre 125 y 100 cc." }
+        val cilindradaCorregida = when {
+            cilindrada < 125 -> 125
+            cilindrada > 1000 -> 1000
+            else -> cilindrada
+        }
     }
 
     companion object {

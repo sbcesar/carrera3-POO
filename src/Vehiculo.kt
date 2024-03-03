@@ -1,3 +1,4 @@
+import kotlin.random.Random
 
 /**
  * Representa un vehículo genérico con propiedades básicas y funcionalidades para calcular la autonomía, realizar viajes,
@@ -12,9 +13,9 @@
  * @constructor Crea una instancia de un vehículo con los parámetros especificados y valida las condiciones iniciales.
  */
 open class Vehiculo(
-    val nombre: String,
-    protected val marca: String,
-    protected val modelo: String,
+    var nombre: String,
+    protected var marca: String,
+    protected var modelo: String,
     capacidadCombustible: Float,
     combustibleActual: Float,
     var kilometrosActuales: Float
@@ -23,9 +24,12 @@ open class Vehiculo(
     protected val capacidadCombustible = capacidadCombustible.redondear(2)
     var combustibleActual = combustibleActual.redondear(2)
         set(value) {
-            // Si por pequeños errores de redondeo el valor es negativo, establecemos el valor 0,
-            // sino asignamos el valor redondeado a 2 decimales
-            field = if (value < 0) 0f else value.redondear(2)
+            field =  when {
+                value < 0 -> 0f
+                value > capacidadCombustible -> capacidadCombustible
+                value < capacidadCombustible * 0.2f -> (capacidadCombustible * 0.2f).redondear(2)
+                else -> value.redondear(2)
+            }
         }
 
     init {
@@ -35,6 +39,19 @@ open class Vehiculo(
 
     companion object {
         const val KM_POR_LITRO = 10.0f // 10 KM por litro.
+
+        /**
+         * Genera una cantidad de combustible aleatoria dentro del rango permitido para el vehículo.
+         *
+         * @param capacidad La capacidad de combustible del vehículo.
+         * @return La cantidad de combustible generada aleatoriamente.
+         */
+        fun generarCombustibleAleatorio(capacidad: Float): Float {
+            val min = capacidad * 0.2
+            val max = capacidad
+            val combustible = Random.nextDouble(min, max.toDouble())
+            return combustible.toFloat().redondear(2)
+        }
     }
 
     /**
@@ -46,6 +63,7 @@ open class Vehiculo(
     override fun toString(): String {
         return "Vehículo: $nombre, Marca: $marca, Modelo: $modelo, Kilómetros Actuales: $kilometrosActuales, Combustible Actual: $combustibleActual L."
     }
+
 
     /**
      * Calcula y devuelve la autonomía del vehículo en kilómetros, basada en la cantidad actual de combustible y

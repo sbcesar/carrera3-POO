@@ -11,7 +11,7 @@ open class Automovil(
     capacidadCombustible: Float,
     combustibleActual: Float,
     kilometrosActuales: Float,
-    private val esHibrido: Boolean
+    val esHibrido: Boolean
 ) : Vehiculo(nombre, marca, modelo, capacidadCombustible, combustibleActual, kilometrosActuales) {
 
     companion object {
